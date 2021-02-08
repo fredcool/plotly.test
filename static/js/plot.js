@@ -12,18 +12,33 @@ function doWork() {
 }
 
 function makePlot(data) {
+    var xdata = []; 
+    var ydata = [];
+    data.forEach(element => {
+        xdata.push(element["Geological Time Period"]);
+        ydata.push(element["Diet"]);
+    });
     var trace = {
-        x: data["Geological Time Period"],
-        y: data.Diet,
+        x: xdata,
+        y: ydata,
         name: 'Dino Diet',
         type: 'bar'
     };
+    
     var layout = {
-        title: "Dinosaur"
+        title: "Dinosaur",
+        xaxis: {
+            title: 'Geological Time Period',
+            showgrid: false,
+            zeroline: false
+          },
+          yaxis: {
+            title: 'Diet',
+            showline: false
+          }
     };
 
     var data = [trace];
-    console.log(data);
 
-    Plotly.newPlot("bar-plot", trace, layout);
+    Plotly.newPlot("bar-plot", data, layout);
 };
