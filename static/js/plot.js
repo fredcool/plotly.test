@@ -6,16 +6,17 @@ $(document).ready(function() {
     // });
 
     $('#decade').change(function() {
-        doWork();
+        doWork(false);
     });
 
-    doWork();
+    doWork(true);
 });
 
-function doWork() {
+function doWork(isInit) {
     d3.csv("static/data/kaggle.csv").then(function(data) {
         console.log(data);
-        makeFilters(data);
+        if (isInit)
+            makeFilters(data);
         var filteredData = makeStackedAreaChart(data);
         makePlot(filteredData);
     });
@@ -31,6 +32,7 @@ function makeFilters(data) {
         }
     });
     dropDownList.sort((a, b ) => b - a);
+    $('#decade').html('');
     $('#decade').append(`<option value="all">All</option>`);
     dropDownList.forEach(function(val) {
         var newOption = `<option>${val}</option>`;
