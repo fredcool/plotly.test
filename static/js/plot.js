@@ -4,81 +4,89 @@ $(document).ready(function() {
     //     doWork();
 
     // });
-    doWork();
 
+    $('#decade').change(function() {
+        doWork();
+    });
+
+    doWork();
 });
 
 function doWork() {
     d3.csv("static/data/kaggle.csv").then(function(data) {
         console.log(data);
-
-
-        makePlot(data);
         makeFilters(data);
-
+        var filteredData = makeStackedAreaChart(data);
+        makePlot(filteredData);
     });
 }
 
 //poplulate the drop down list
 
 function makeFilters(data) {
-
+    var dropDownList = [];
     data.map(x => x["Ref Pubyr"]).forEach(function(val) {
+        if (dropDownList.find(element => element == parseInt(val / 10) * 10) == undefined) {
+            dropDownList.push(parseInt(val / 10) * 10);
+        }
+    });
+    dropDownList.sort((a, b ) => b - a);
+    $('#decade').append(`<option value="all">All</option>`);
+    dropDownList.forEach(function(val) {
         var newOption = `<option>${val}</option>`;
         $('#decade').append(newOption);
     });
-
-    // function makeStackedAreaChart(data) {
-    //     var filter = $("#decade").val();
-    //     if (filter != "All") {
-    //         if (filter == "2010") {
-    //             data = data.filter(x => (x["Ref Pubyr"] >= 2010) & (x["Ref Pubyr"] < 2020))
-    //         } else if (filter == "2000") {
-    //             data = data.filter(x => (x["Ref Pubyr"] >= 2000) & (x["Ref Pubyr"] < 2010))
-    //         } else if (filter == "1990") {
-    //             data = data.filter(x => (x["Ref Pubyr"] >= 1990) & (x["Ref Pubyr"] < 2000))
-    //         } else if (filter == "1980") {
-    //             data = data.filter(x => (x["Ref Pubyr"] >= 1980) & (x["Ref Pubyr"] < 1990))
-    //         } else if (filter == "1970") {
-    //             data = data.filter(x => (x["Ref Pubyr"] >= 1970) & (x["Ref Pubyr"] < 1980))
-    //         } else if (filter == "1960") {
-    //             data = data.filter(x => (x["Ref Pubyr"] >= 1960) & (x["Ref Pubyr"] < 1970))
-    //         } else if (filter == "1950") {
-    //             data = data.filter(x => (x["Ref Pubyr"] >= 1950) & (x["Ref Pubyr"] < 1960))
-    //         } else if (filter == "1940") {
-    //             data = data.filter(x => (x["Ref Pubyr"] >= 1940) & (x["Ref Pubyr"] < 1950))
-    //         } else if (filter == "1930") {
-    //             data = data.filter(x => (x["Ref Pubyr"] >= 1930) & (x["Ref Pubyr"] < 1940))
-    //         } else if (filter == "1920") {
-    //             data = data.filter(x => (x["Ref Pubyr"] >= 1920) & (x["Ref Pubyr"] < 1930))
-    //         } else if (filter == "1910") {
-    //             data = data.filter(x => (x["Ref Pubyr"] >= 1910) & (x["Ref Pubyr"] < 1920))
-    //         } else if (filter == "1900") {
-    //             data = data.filter(x => (x["Ref Pubyr"] >= 1900) & (x["Ref Pubyr"] < 1910))
-    //         } else if (filter == "1890") {
-    //             data = data.filter(x => (x["Ref Pubyr"] >= 1890) & (x["Ref Pubyr"] < 1900))
-    //         } else if (filter == "1880") {
-    //             data = data.filter(x => (x["Ref Pubyr"] >= 1880) & (x["Ref Pubyr"] < 1890))
-    //         } else if (filter == "1870") {
-    //             data = data.filter(x => (x["Ref Pubyr"] >= 1870) & (x["Ref Pubyr"] < 1880))
-    //         } else if (filter == "1860") {
-    //             data = data.filter(x => (x["Ref Pubyr"] >= 1860) & (x["Ref Pubyr"] < 1870))
-    //         } else if (filter == "1850") {
-    //             data = data.filter(x => (x["Ref Pubyr"] >= 1850) & (x["Ref Pubyr"] < 1860))
-    //         } else if (filter == "1840") {
-    //             data = data.filter(x => (x["Ref Pubyr"] >= 1840) & (x["Ref Pubyr"] < 1850))
-    //         } else if (filter == "1830") {
-    //             data = data.filter(x => (x["Ref Pubyr"] >= 1830) & (x["Ref Pubyr"] < 1840))
-    //         }
-    //     }
 }
 
+function makeStackedAreaChart(data) {
+    var filter = $("#decade").val();
+    if (filter !== "all") {
+        data = data.filter(x => (x["Ref Pubyr"] >= parseInt(filter)) & (x["Ref Pubyr"] < parseInt(filter + 10)));
 
-
+        // if (filter == "2010") {
+        //     data = data.filter(x => (x["Ref Pubyr"] >= 2010) & (x["Ref Pubyr"] < 2020))
+        // } else if (filter == "2000") {
+        //     data = data.filter(x => (x["Ref Pubyr"] >= 2000) & (x["Ref Pubyr"] < 2010))
+        // } else if (filter == "1990") {
+        //     data = data.filter(x => (x["Ref Pubyr"] >= 1990) & (x["Ref Pubyr"] < 2000))
+        // } else if (filter == "1980") {
+        //     data = data.filter(x => (x["Ref Pubyr"] >= 1980) & (x["Ref Pubyr"] < 1990))
+        // } else if (filter == "1970") {
+        //     data = data.filter(x => (x["Ref Pubyr"] >= 1970) & (x["Ref Pubyr"] < 1980))
+        // } else if (filter == "1960") {
+        //     data = data.filter(x => (x["Ref Pubyr"] >= 1960) & (x["Ref Pubyr"] < 1970))
+        // } else if (filter == "1950") {
+        //     data = data.filter(x => (x["Ref Pubyr"] >= 1950) & (x["Ref Pubyr"] < 1960))
+        // } else if (filter == "1940") {
+        //     data = data.filter(x => (x["Ref Pubyr"] >= 1940) & (x["Ref Pubyr"] < 1950))
+        // } else if (filter == "1930") {
+        //     data = data.filter(x => (x["Ref Pubyr"] >= 1930) & (x["Ref Pubyr"] < 1940))
+        // } else if (filter == "1920") {
+        //     data = data.filter(x => (x["Ref Pubyr"] >= 1920) & (x["Ref Pubyr"] < 1930))
+        // } else if (filter == "1910") {
+        //     data = data.filter(x => (x["Ref Pubyr"] >= 1910) & (x["Ref Pubyr"] < 1920))
+        // } else if (filter == "1900") {
+        //     data = data.filter(x => (x["Ref Pubyr"] >= 1900) & (x["Ref Pubyr"] < 1910))
+        // } else if (filter == "1890") {
+        //     data = data.filter(x => (x["Ref Pubyr"] >= 1890) & (x["Ref Pubyr"] < 1900))
+        // } else if (filter == "1880") {
+        //     data = data.filter(x => (x["Ref Pubyr"] >= 1880) & (x["Ref Pubyr"] < 1890))
+        // } else if (filter == "1870") {
+        //     data = data.filter(x => (x["Ref Pubyr"] >= 1870) & (x["Ref Pubyr"] < 1880))
+        // } else if (filter == "1860") {
+        //     data = data.filter(x => (x["Ref Pubyr"] >= 1860) & (x["Ref Pubyr"] < 1870))
+        // } else if (filter == "1850") {
+        //     data = data.filter(x => (x["Ref Pubyr"] >= 1850) & (x["Ref Pubyr"] < 1860))
+        // } else if (filter == "1840") {
+        //     data = data.filter(x => (x["Ref Pubyr"] >= 1840) & (x["Ref Pubyr"] < 1850))
+        // } else if (filter == "1830") {
+        //     data = data.filter(x => (x["Ref Pubyr"] >= 1830) & (x["Ref Pubyr"] < 1840))
+        // }
+    }
+    return data;
+}
 
 function makePlot(data) {
-
-
     var xdata = [...new Set(data.map(x => x["Geological Time Period"]))]
     var ycarn = [];
     var ypisc = [];
@@ -96,8 +104,6 @@ function makePlot(data) {
         ymixed1.push(group.filter(x => x.Diet === "carnivore, omnivore").length);
         ymixed2.push(group.filter(x => x.Diet === "herbivore, omnivore").length);
     });
-
-
 
     var trace1 = {
         x: xdata,
