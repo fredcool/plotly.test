@@ -22,10 +22,17 @@
 //set the  filter value
 
 function filterBarChart(data) {
-    var filter = $("#decade").val();
+    let filter = $("#decade").val();
     if (filter !== "All") {
-        data = data.filter(x => parseInt(x["Ref Pubyr"]) >= parseInt(filter) && parseInt(x["Ref Pubyr"]) < (parseInt(filter) + 10));
-
+        data = data.filter(x => {
+            let year =  parseInt(x["Ref Pubyr"]);
+            let fromYear = parseInt(filter);
+            let toYear = parseInt(filter) + 10;
+            if (typeof(x["Ref Pubyr"]) !== 'string') {
+                year = x["Ref Pubyr"].getFullYear();
+            }
+            return year >= fromYear && year < toYear;
+        });
     }
     return data;
 }
