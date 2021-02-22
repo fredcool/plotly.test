@@ -43,7 +43,7 @@ function makeFilters(data) {
 function makeStackedAreaChart(data) {
     var filter = $("#decade").val();
     if (filter !== "all") {
-        data = data.filter(x => (x["Ref Pubyr"] >= parseInt(filter)) & (x["Ref Pubyr"] < parseInt(filter + 10)));
+        data = data.filter(x => parseInt(x["Ref Pubyr"]) >= parseInt(filter) && parseInt(x["Ref Pubyr"]) < (parseInt(filter) + 10));
 
         // if (filter == "2010") {
         //     data = data.filter(x => (x["Ref Pubyr"] >= 2010) & (x["Ref Pubyr"] < 2020))
